@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 import { BasePage } from './BasePage';
-import { Header } from './components/header';
+import { Header } from './components/Header';
 
 export class InventoryPage extends BasePage {
     public readonly header = new Header(this.page);
