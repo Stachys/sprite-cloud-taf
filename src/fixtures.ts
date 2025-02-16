@@ -1,5 +1,5 @@
 import { test as base, expect, Page } from '@playwright/test';
-import { UsersApi } from './api/endpoints/users';
+import { UsersApi } from './api/endpoints/Users';
 import { ResourceApi } from './api/endpoints/Resource';
 
 type MyFixtures = {
