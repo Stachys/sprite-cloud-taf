@@ -9,29 +9,6 @@ on:
     - cron: '0 4 * * *'
 
 jobs:
-  setup:
-    name: Setup Environment
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      cache-key: ${{ steps.cache-deps.outputs.cache-hit }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-      - name: Cache dependencies
-        id: cache-deps
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      - name: Install dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: npm ci
-
   api_test:
     name: Run API Tests
     runs-on: ubuntu-latest
@@ -40,11 +17,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Restore cached dependencies
-        uses: actions/cache@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: ~/.npm
-          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm ci
       - name: Run Playwright API tests
         run: npx playwright test --config=playwright.api.config.ts
       - name: Upload Playwright API Report
@@ -53,7 +31,6 @@ jobs:
           name: playwright-api-report
           path: playwright-report/
           retention-days: 30
-
   ui_test:
     name: Run UI Tests
     runs-on: ubuntu-latest
@@ -62,11 +39,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Restore cached dependencies
-        uses: actions/cache@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: ~/.npm
-          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright UI tests
